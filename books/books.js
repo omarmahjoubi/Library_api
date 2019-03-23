@@ -78,7 +78,7 @@ app.get("/book/:id", (req,res) => {
 
 // delete one book
 app.delete('/book/:id',(req,res) => {
-    Book.findOneAndRemove(req.params.id).then(() => {
+    Book.findOneAndDelete(req.params.id).then(() => {
         res.send("Book deleted with success!") ;
     }).catch((err) => {
         if (err) {
