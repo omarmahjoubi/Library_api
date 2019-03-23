@@ -84,7 +84,20 @@ app.get('/order/:id', (req,res) => {
         }
     }) ;
 
-})
+}) ;
+
+// delete an order 
+app.delete('/order/:id',(req,res) => {
+
+    Order.findOneAndDelete(req.params.id).then(() => {
+        res.send("Order deleted!") ;
+    }).catch((err) => {
+        if (err) {
+            throw err ;
+        }
+    }) ;
+
+}) ;
 
 // home route 
 app.get('/',(req,res) => {
