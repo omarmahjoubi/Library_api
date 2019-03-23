@@ -9,6 +9,9 @@ app.use(bodyParser.json()) ;
 // load mongoose
 const mongoose = require("mongoose") ;
 
+// load axios 
+const axios = require("axios") ;
+
 // connect to database
 mongoose.connect("mongodb://admin:admin123@ds147985.mlab.com:47985/orders_database",() => {
     console.log("connected to database!") ;
@@ -51,6 +54,30 @@ app.get('/orders',(req,res) => {
 
     Order.find().then((orders) => {
         res.json(orders) ;
+    }).catch((err) => {
+        if (err) {
+            throw err ;
+        }
+    }) ;
+
+})
+
+// list one order by his id
+app.get('/order/:id', (req,res) => {
+
+    Order.findById(req.params.id).then((order) => {
+        if (order) {
+            axios.get("http://localhost:5000/customer/" + order.CustomerID).then((response) => {
+                var orderObject = { customerName : response.data.name , bookTitle : '' } ;
+
+                axios.get("http://localhost:8000/book/" + order.BookID).then((response) => {
+                    orderObject.bookTitle = response.data.title ; 
+                    res.json(orderObject) ;
+                })
+            }) ;
+        } else {
+            res.send("Invalid ID!") ;
+        }
     }).catch((err) => {
         if (err) {
             throw err ;
